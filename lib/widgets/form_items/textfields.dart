@@ -3,20 +3,26 @@ import 'package:flutter/material.dart';
 class StyledTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
-  final bool isMarkdownEnabled;
   final bool isMultiline;
   final int maxLines;
   final void Function(String)? onChanged;
   final String? Function(String?)? validator;
+  final IconData? leadingIcon;
+  final IconData? trailingIcon;
+  final void Function()? onLeadingIconTap;
+  final void Function()? onTrailingIconTap;
 
   StyledTextField({
     required this.controller,
     required this.label,
-    this.isMarkdownEnabled = false,
     this.isMultiline = false,
     this.maxLines = 1,
     this.onChanged,
     this.validator,
+    this.leadingIcon,
+    this.trailingIcon,
+    this.onLeadingIconTap,
+    this.onTrailingIconTap,
   });
 
   @override
@@ -29,30 +35,8 @@ class StyledTextField extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 8.0),
-        isMarkdownEnabled
-            ? _buildMarkdownTextField()
-            : _buildRegularTextField(),
+        _buildRegularTextField(),
       ],
-    );
-  }
-
-  Widget _buildMarkdownTextField() {
-    return Container(
-      child: TextFormField(
-        
-         decoration: InputDecoration(
-          
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5.0),
-            
-          ),
-        ),
-        controller: controller,
-        keyboardType: TextInputType.multiline,
-        maxLines: null,
-        onChanged: onChanged,
-        validator: validator,
-      ),
     );
   }
 
@@ -67,7 +51,21 @@ class StyledTextField extends StatelessWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5.0),
         ),
+        prefixIcon: leadingIcon != null
+            ? GestureDetector(
+                onTap: onLeadingIconTap,
+                child: Icon(leadingIcon),
+              )
+            : null,
+        suffixIcon: trailingIcon != null
+            ? GestureDetector(
+                onTap: onTrailingIconTap,
+                child: Icon(trailingIcon),
+              )
+            : null,
       ),
     );
   }
 }
+
+

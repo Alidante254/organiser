@@ -1,4 +1,7 @@
 import 'package:Organiser/models/sub_collections/event_model.dart';
+import 'package:Organiser/pages/add_items/add_description.dart';
+import 'package:Organiser/widgets/dialogues/add_cartegory.dart';
+import 'package:Organiser/widgets/dialogues/add_tag.dart';
 import 'package:Organiser/widgets/form_items/buttons.dart';
 import 'package:Organiser/widgets/form_items/dropdown.dart';
 import 'package:Organiser/widgets/form_items/location_card.dart';
@@ -8,7 +11,6 @@ import 'package:Organiser/widgets/form_items/textfields.dart';
 import 'package:flutter/material.dart';
 import 'package:Organiser/models/sub_collections/event.dart';
 import 'package:image_picker/image_picker.dart';
-
 
 List<String> eventCategoryList = EventCategory.values
     .map((category) => category.toString().split('.').last)
@@ -94,8 +96,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
   }
 
   Future<void> _pickImage() async {
-    XFile? image =
-        await _imagePicker.pickImage(source: ImageSource.gallery);
+    XFile? image = await _imagePicker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() {
         selectedImage = image as PickedFile?;
@@ -147,23 +148,41 @@ class _CreateEventPageState extends State<CreateEventPage> {
                   label: 'Event title',
                 ),
                 SizedBox(height: 16.0),
-                StyledTextField(
-                  controller: _descriptionController,
-                  label: 'Event Description',
-                  isMarkdownEnabled: true,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    StyledButtons.primaryElevatedButton(
+                      onPressed: () async {
+                        String? result = await AddCategoryDialog.show(context);
+                        if (result != null) {}
+                      },
+                      text: 'Event cartegory',
+                      icon: Icons.add,
+                    ),
+                    StyledButtons.primaryElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DescriptionEditorPage(),
+                            ));
+                      },
+                      text: 'Add description',
+                      icon: Icons.add,
+                    ),
+                    StyledButtons.primaryElevatedButton(
+                      onPressed: () async {
+                        String? result = await AddTagDialog.show(context);
+                        if (result != null) {
+                         
+                        }
+                      },
+                      text: 'Add Tags',
+                      icon: Icons.add,
+                    ),
+                  ],
                 ),
                 SizedBox(height: 16.0),
-                StyledDropdown(
-                  selectedValue: cartegoeyDropdownValue,
-                  items: eventCategoryList,
-                  onChanged: (String value) {
-                    setState(() {
-                      cartegoeyDropdownValue = value;
-                    });
-                  },
-                ),
-                SizedBox(height: 16.0),
-                TagChips(),
                 SizedBox(height: 16.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -178,11 +197,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       children: [
                         Switch(
                           value: isMultiDay,
-                          onChanged: (bool newValue) {
-                            setState(() {
-                              isMultiDay = newValue;
-                            });
-                          },
+                          onChanged: (bool newValue) => setState(() {
+                            isMultiDay = newValue;
+                          }),
                         ),
                         Text('Multiple Days'),
                       ],
@@ -199,6 +216,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           onPressed: () => _selectDate(context, fromDate, true),
                           text: '${fromDate.toLocal()}'.split(' ')[0],
                           icon: Icons.calendar_month,
+                          context: context,
                         ),
                       ],
                     ),
@@ -211,11 +229,13 @@ class _CreateEventPageState extends State<CreateEventPage> {
                                 _selectDate(context, toDate, false),
                             text: '${toDate.toLocal()}'.split(' ')[0],
                             icon: Icons.calendar_month,
+                            context: context,
                           ),
                         ],
                       ),
                   ],
                 ),
+                SizedBox(height: 16.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -225,21 +245,23 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Row(
-                      children: [
-                        Switch(
-                          value: sameEachDay,
-                          onChanged: (bool newValue) {
-                            setState(() {
-                              sameEachDay = newValue;
-                            });
-                          },
-                        ),
-                        Text('Same each day'),
-                      ],
-                    ),
+                    if (isMultiDay)
+                      Row(
+                        children: [
+                          Switch(
+                            value: sameEachDay,
+                            onChanged: (bool newValue) {
+                              setState(() {
+                                sameEachDay = newValue;
+                              });
+                            },
+                          ),
+                          Text('Same each day'),
+                        ],
+                      ),
                   ],
                 ),
+                SizedBox(height: 16.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -251,6 +273,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           text:
                               '${fromDate.toLocal().hour.toString().padLeft(2, '0')}:${fromDate.toLocal().minute.toString().padLeft(2, '0')}',
                           icon: Icons.access_time,
+                          context: context,
+                          borderRadius: 3,
                         ),
                       ],
                     ),
@@ -262,6 +286,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           text:
                               '${toDate.toLocal().hour.toString().padLeft(2, '0')}:${toDate.toLocal().minute.toString().padLeft(2, '0')}',
                           icon: Icons.access_time,
+                          context: context,
+                          borderRadius: 3,
                         ),
                       ],
                     )
@@ -275,7 +301,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     Expanded(
                       child: StyledTextField(
                         controller: ticketsController,
-                        label: 'Number of Tickets',
+                        label: 'Number of Available Tickets',
                         isMultiline: false,
                       ),
                     ),
@@ -283,8 +309,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
                     Expanded(
                       child: StyledTextField(
                         controller: costPerTicketController,
-                        label: 'Cost per Ticket (\$)',
+                        label: 'Cost per Ticket',
                         isMultiline: false,
+                        leadingIcon: Icons.currency_exchange,
                       ),
                     ),
                   ],

@@ -6,6 +6,9 @@ class LocationCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {},
       child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
         elevation: 1,
         margin: EdgeInsets.zero,
         child: Center(
@@ -16,6 +19,7 @@ class LocationCard extends StatelessWidget {
                 fit: BoxFit.cover,
                 width: double.infinity,
                 height: 150,
+               
               ),
               Center(
                 child: Column(

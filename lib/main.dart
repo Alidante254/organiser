@@ -27,8 +27,6 @@ Future<void> main() async {
   );
 }
 
-
-
 class OrganiserApp extends StatefulWidget {
   const OrganiserApp({Key? key}) : super(key: key);
 
@@ -43,7 +41,7 @@ class _OrganiserAppState extends State<OrganiserApp> {
       statusBarColor: Colors.transparent,
     ));
 
-    var colorPrimary = Colors.deepOrange;
+    var colorPrimary = Colors.blueGrey;
 
     var myColor = ThemeData(
       primarySwatch: colorPrimary,

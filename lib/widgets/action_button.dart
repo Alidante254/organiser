@@ -1,5 +1,5 @@
 import 'package:Organiser/models/sub_collections/event_model.dart';
-import 'package:Organiser/widgets/dialogues/add_event.dart';
+import 'package:Organiser/pages/add_items/add_event.dart';
 import 'package:flutter/material.dart';
 
 class CustomFAB extends StatefulWidget {
